@@ -35,6 +35,7 @@ module ExpenseTracker
 
                     expect(last_response.status).to eq(200)
                 end
+
             end
 
             context 'when the expense fails validation' do
@@ -61,5 +62,42 @@ module ExpenseTracker
             end
 
         end
+
+        describe 'GET /expenses/:date' do
+
+            context 'when expenses exist on the given date' do
+
+                it 'returns the expense records as JSON' do
+                    allow(ledger).to receive(:expenses_on)
+                    .with('2017-06-12')
+                    .and_return([{ 'id' => 1, 'date' => '2017-06-12' }])
+                end
+
+                it 'responds with a 200 (OK)' do
+                    get '/expenses/2017-06-12'
+
+                    expect(last_response.status).to eq(200)
+                end
+
+            end
+
+            context 'when no expenses exist on the given date' do
+
+                it 'returns an empty array as JSON' do
+                    allow(ledger).to receive(:expenses_on)
+                    .with('2017-06-12')
+                    .and_return([])
+                end
+
+                it 'responds with a 200 (OK)' do
+                    get '/expenses/2017-06-12'
+
+                    expect(last_response.status).to eq(200)
+                end
+
+            end
+
+        end
+
     end
 end
